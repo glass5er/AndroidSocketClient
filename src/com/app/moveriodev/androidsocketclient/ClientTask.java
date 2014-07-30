@@ -12,7 +12,7 @@ import java.util.UUID;
 /**
  * Created by doba on 2014/07/16.
  */
-public class SocketTask {
+public class ClientTask {
     private static final String TAG = "SocketTask";
 
     private static final UUID APP_UUID = UUID.fromString("e509e07c-1b92-4b45-92bd-e1deb8731442");
@@ -25,14 +25,13 @@ public class SocketTask {
     private String mStrPort = "";
 
     // Constructor
-    public SocketTask(MainActivity activity) {
+    public ClientTask(MainActivity activity) {
         this.activity = activity;
     }
 
-    public void init() {
-        // mAddress = "192.168.10.5";
-        mAddress = "192.168.10.6";
-        mStrPort = "39999";
+    public void init(String ip, String port) {
+        mAddress = ip;
+        mStrPort = port;
     }
 
     public void doConnect()        { new ConnectTask().execute(); }
@@ -120,7 +119,6 @@ public class SocketTask {
                 Log.e(TAG, result.toString(), (Throwable) result);
                 activity.errorDialog(result.toString());
             } else {
-                // 驍ｨ蜈域｣｡郢ｧ蝣､蛻､鬮ｱ�ｽ｢邵ｺ�ｽｫ陷ｿ閧ｴ荳千ｸｲ�ｿｽ
                 activity.doSetResultText(result.toString());
             }
         }

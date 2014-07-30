@@ -22,11 +22,13 @@ public class MainActivity extends Activity {
     private final static int DEVICES_DIALOG = 1;
     private final static int ERROR_DIALOG = 2;
 
-    private SocketTask socketTask = new SocketTask(this);
+    private ClientTask clientTask = new ClientTask(this);
 
     private ProgressDialog waitDialog;
-    private EditText editText1;
-    private EditText editText2;
+    private EditText editTextInput;
+    private EditText editTextOutput;
+    private EditText editTextIP;
+    private EditText editTextPort;
     private String errorMessage = "";
 
     @Override
@@ -34,19 +36,18 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        editText1 = (EditText) findViewById(R.id.editText1);
-        editText2 = (EditText) findViewById(R.id.editText2);
-
-        socketTask.init();
-        socketTask.doConnect();
+        editTextInput  = (EditText) findViewById(R.id.editText1);
+        editTextOutput = (EditText) findViewById(R.id.editText2);
+        editTextIP     = (EditText) findViewById(R.id.editTextIP);
+        editTextPort   = (EditText) findViewById(R.id.editTextPort);
 
         Button sendBtn = (Button) findViewById(R.id.sendBtn);
         sendBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                String msg = editText1.getText().toString();
+                String msg = editTextInput.getText().toString();
                 Log.d("SOCKET_TEST", "click : " + msg);
-                socketTask.doSend(msg);
+                clientTask.doSend(msg);
             }
         });
         Button resetBtn = (Button) findViewById(R.id.resetBtn);
@@ -64,18 +65,22 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
-        socketTask.doClose();
+        clientTask.doClose();
         super.onDestroy();
     }
 
     public void doSetResultText(String text) {
-        editText2.setText(text);
+        editTextOutput.setText(text);
     }
 
     protected void restart() {
-        Intent intent = this.getIntent();
-        this.finish();
-        this.startActivity(intent);
+        //Intent intent = this.getIntent();
+        //this.finish();
+        clientTask.doClose();
+        String strIP   = editTextIP  .getText().toString();
+        String strPort = editTextPort.getText().toString();
+        clientTask.init(strIP, strPort);
+        clientTask.doConnect();
     }
 
     @SuppressWarnings("deprecation")
